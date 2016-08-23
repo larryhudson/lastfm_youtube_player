@@ -1,0 +1,61 @@
+<!-- <script src="http://www.youtube.com/player_api"></script> -->
+
+<!-- 
+<script>
+    
+    // create youtube player
+    var player;
+    var playertag = document.getElementsById('iframeplayer')[0];
+    var nowplaying = 1;
+    var nextvid;
+    var nextvidlink;
+    function onYouTubePlayerAPIReady() {
+        player = new YT.Player('player', {
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+    }
+
+    // autoplay video
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    // when video ends
+    function onPlayerStateChange(event) {        
+        if(event.data === 0) {
+        	player.loadVideoById(
+            
+        }
+    }
+    
+</script>
+ -->
+
+
+
+<h2>{{ album.artist }} - {{ album.name }} </h2>
+
+<p><b>Album wiki info</b></p>
+<p>{{ album.summary }}</p>
+
+<player code>
+<iframe name="player"type="text/html" width="200" height="200"
+  src="http://www.youtube.com/embed/{{ tracklist.0.youtube_link }}?autoplay=0&frameborder=0"></iframe>
+
+
+<h3>Tracklist</h3>
+<ol>
+{% for song in tracklist %}
+	{% if song.youtube_link != "0" %}
+	<a href="https://www.youtube.com/embed/{{ song.youtube_link }}?autoplay=1" target="player" id="{{ song.track_num }}">
+	<li>{{ song.name }}</li>
+	</a>
+	{% else %}
+	<li>{{ song.name }}</li>
+	{% endif %}
+{% endfor %}
+</ol>
+
