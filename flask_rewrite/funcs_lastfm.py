@@ -1,7 +1,7 @@
 import xmltodict
 import requests
-from fuzzywuzzy import fuzz
 from os import environ
+
 
 def album_search(artist, album):
     method = "album.getinfo"
@@ -22,7 +22,7 @@ def album_search(artist, album):
                      'name': xml_dict['lfm']['album']['name'],
                      }
 
-    album['tracks'] = [{'num': track['@rank'], 'name': track['name']}
+    album['tracks'] = [{'num': track['@rank'], 'name': track['name'], 'video_id': False}
                        for track in xml_tracks]
 
     return album

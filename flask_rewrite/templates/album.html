@@ -1,7 +1,71 @@
-<h2> {{ album['info']['artist'] }} - {{ album['info']['name'] }}</h2>
+<head>
+    <title>Player - {{ album['info']['artist'] }} - {{ album['info']['name'] }}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<ol>
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+
+    <script>
+          var tag = document.createElement('script');
+          tag.src = "https://www.youtube.com/iframe_api";
+          var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+          var currentSongNum = 0;
+          var tracks = []
+          {% for track in album['tracks'] %}
+          tracks.push('{{ track['video_id']}}')
+          {% endfor %}
+          var albumLength = {{ album['tracks']|length }};
+
+          var player;
+          function onYouTubeIframeAPIReady() {
+              var firstSong = document.querySelector('#song0');
+              firstSong.classList.add('active');
+              player = new YT.Player('player', {
+              height: '200',
+              width: '200',
+              videoId: tracks[0],
+
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
+        });
+    }
+        function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.ENDED) {
+          if (currentSongNum < albumLength) {
+              player.loadVideoById(tracks[currentSongNum + 1]);
+              var currentSongNum = currentSongNum + 1;
+          } else {
+              var lastSong = document.querySelector('#song' + (albumLength - 1));
+              lastSong.classList.remove('active');
+          }
+
+      }
+    }
+    function changeSong(song_num) {
+        player.loadVideoById(tracks[song_num]);
+        var nextTrackId = tracks[song_num + 1];
+        var currentSongNum = song_num;
+        var songAnchor = document.querySelector('#song' + song_num);
+        var previousSong = document.querySelector(".active");
+        previousSong.classList.remove('active');
+        songAnchor.classList.add('active');
+    }
+
+
+
+    </script>
+
+</head>
+
+<h2> {{ album['info']['artist'] }} - {{ album['info']['name'] }}</h2>
+<div id="player"></div>
+<div class="list-group">
     {% for track in album['tracks'] %}
-    <li> {{ track['name'] }} - {{ track['video_id'] }}</li>
+        <a href="javascript:changeSong({{ album['tracks'].index(track) }});" id="song{{ album['tracks'].index(track) }}" class="list-group-item list-group-item-action">{{ track['name'] }} - {{ track['video_id'] }}</a>
     {% endfor %}
-</ol>
+</div>
