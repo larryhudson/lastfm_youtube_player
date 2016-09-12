@@ -1,0 +1,7 @@
+<h2> {{ album['info']['artist'] }} - {{ album['info']['name'] }}</h2>
+
+<ol>
+    {% for track in album['tracks'] %}
+    <li> {{ track['name'] }} - {{ track['video_id'] }}</li>
+    {% endfor %}
+</ol>
