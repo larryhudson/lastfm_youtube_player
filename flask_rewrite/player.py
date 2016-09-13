@@ -12,21 +12,13 @@ def play_album(artist_slug, album_slug):
     album = lfm.album_search(artist_input, album_input)
 
     # try playlist search
-    playlist_videos = yt.playlist_search(artist=album['info']['artist'], album=album['info']['name'])
+    yt.playlist_search(album)
 
-
-    if playlist_videos:
-        for track in album['tracks']:
-            song_string = album['info']['artist'] + " " + track["name"]
-            for playlist_vid in playlist_videos:
-                if yt.compare_song_vid(song_string, playlist_vid['title']):
-                    track['video_id'] = playlist_vid['id']
-                    print("Assigned video id", track['video_id'], "to", song_string)
-
+    # keyword search for remaining tracks
     for track in album['tracks']:
         if not track['video_id']:
             track['video_id'] = yt.keyword_search(artist=album['info']['artist'],
                                                   album=album['info']['name'],
                                                   track=track['name'])
 
-    return render_template("album.html", album=album)
+    return render_template("album2.html", album=album)
