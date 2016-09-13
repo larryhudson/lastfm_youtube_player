@@ -76,8 +76,10 @@ def playlist_search(album_dict):
             for video in plist_songs:
                 done = False
                 vid_name = video['title']
+                clean_vid_name = vid_name.lower().strip("'!@#$.,")
                 for song in tracks:
                     song_string = artist_name + " " + song['name']
+                    clean_song_name = song['name'].lower().strip("'!@#$.,")
                     print("comparing", vid_name, "and", song_string)
                     if vid_name == song['name']:
                         song['video_id'] = video['id']
@@ -86,7 +88,7 @@ def playlist_search(album_dict):
                         break
                     if done:
                         continue
-                    if song['name'].lower().strip("'!@#$.,") in vid_name.lower().strip("'!@#$.,"):
+                    if clean_song_name in clean_vid_name:
                         song['video_id'] = video['id']
                         print("Assigned video id", video['id'], "to", song_string, "from playlist search")
                         done = True

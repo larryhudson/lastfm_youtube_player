@@ -22,3 +22,10 @@ def play_album(artist_slug, album_slug):
                                                   track=track['name'])
 
     return render_template("album2.html", album=album)
+
+@app.route('/search_tag/<tag_slug>')
+def search_tag(tag_slug):
+    tag_input = tag_slug.replace("-"," ")
+    albums = lfm.albums_with_tag(tag_input)
+    search_string = "Top albums for tag: " + tag_input
+    return render_template("result.html", albums=albums)
