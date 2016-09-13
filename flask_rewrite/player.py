@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import funcs_lastfm as lfm
 import funcs_youtube as yt
 
@@ -29,3 +29,15 @@ def search_tag(tag_slug):
     albums = lfm.albums_with_tag(tag_input)
     search_string = "Top albums for tag: " + tag_input
     return render_template("result.html", albums=albums)
+
+
+@app.route('/_search_for_tag')
+def search_for_tag():
+    tag_input = request.args.get('tag', 0, type=str)
+    albums = lfm.albums_with_tag(tag_input)
+    search_string = "Top albums for tag: " + tag_input
+    return jsonify(result=albums)
+
+@app.route('/ajax_search')
+def ajax_search():
+    return render_template('ajax_search.html')

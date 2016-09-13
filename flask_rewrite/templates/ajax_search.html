@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
+     <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+    <script type="text/javascript">
+  var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+</head>
+<body>
+<input type="text" name="tag"></input>
+<button id="search">Search</button>
+<div id="results"></div>
+
+<script type="text/javascript">
+var response;
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_search_for_tag', {
+        tag: $('input[name="tag"]').val()
+      }, function(data) {
+        $('#results').text(data.result);
+        response = data.result
+        $('input[name=tag]').focus().select();
+        var counter = 0;
+        for (album in response){
+            if ((counter % 3 == 0) && (counter != (response.length - 1))) {
+                $('#results').append('<div class="row">')
+            }
+            $('#results').append('<div class="col-sm-4"><a href="/album/' + album['artist_slug'] + '/' + album['album_slug'] + '"><img class="img-rounded" src="' + album['image'] + '">')
+            $('#results').append('<p>' + album['artist'] + '-' + album['name'] + '</p></a></div>')
+            if ((counter % 3 == 0) && (counter != 0)) {
+                $('#results').append('</div')
+            }
+            if (counter == (response.length - 1)) {
+                $('#results').append('</div')
+            }
+        }
+      });
+      return false;
+    };
+    $('button#search').bind('click', submit_form);
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        submit_form(e);
+      }
+    });
+    $('input[name=tag]').focus();
+
+
+  });
+</script>
+</body>
+</html>
